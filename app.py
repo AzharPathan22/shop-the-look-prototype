@@ -11,21 +11,18 @@ import os
 # -------------------------------
 # Use a raw string (r"...") to prevent Python from interpreting 
 # backslashes (\) as escape sequences.
-CREDENTIALS_PATH = r"D:\02 Work\Business\Fiverr\First_Client\keys\vision-api-demo\creds\vision-api-client-demo.json"
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = CREDENTIALS_PATH
 
 try:
-    # Initialize Vision client only once
-    client = vision.ImageAnnotatorClient()
+    # Load credentials directly from Streamlit Secrets
+    creds_json = st.secrets["GOOGLE_APPLICATION_CREDENTIALS"]
+    creds_dict = json.loads(creds_json)
+    client = vision.ImageAnnotatorClient.from_service_account_info(creds_dict)
     st.session_state['client_ready'] = True
 except Exception as e:
-    # Handle credential errors gracefully without stopping the app
-    st.error(f"❌ Initialization Error: Could not load Google Vision API credentials.")
-    st.error(f"Please check if the file exists at: {CREDENTIALS_PATH}")
+    st.error("❌ Could not load Google Vision API credentials from Streamlit Secrets.")
     st.exception(e)
     st.session_state['client_ready'] = False
-    client = None # Ensure client is None if initialization fails
-
+    client = None
 
 # -------------------------------
 #  Streamlit App UI
@@ -132,3 +129,4 @@ if uploaded_file:
 
 else:
     st.info("👆 Upload an image to begin.")
+
