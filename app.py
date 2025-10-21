@@ -5,6 +5,7 @@ import numpy as np
 import io
 from google.cloud import vision
 import os
+import json
 
 # -------------------------------
 # 🔧 Google Cloud Setup
@@ -129,4 +130,5 @@ if uploaded_file:
 
 else:
     st.info("👆 Upload an image to begin.")
+
 
